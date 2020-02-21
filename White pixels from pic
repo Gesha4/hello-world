@@ -1,0 +1,49 @@
+//Четене на бели пиксели от картинка.
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+public class zadachi {
+		
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		BufferedImage img = null;
+	    File f = null;
+	    try{
+	      f = new File("pic.jpg");
+	      img = ImageIO.read(f);
+	    }catch(IOException e){
+	      System.out.println(e);
+	    }
+	    int whiteCount = 0;
+	    for(int i = 0; i < img.getWidth(); i++) {
+	    	for(int j = 0; j < img.getHeight(); j++) {
+	    //get image width and height
+	    int width = img.getWidth();
+	    int height = img.getHeight();
+	    int p = img.getRGB(i,j);
+	    //get alpha
+	    int a = (p>>24) & 0xff;
+	    //get red
+	    int r = (p>>16) & 0xff;
+	    //get green
+	    int g = (p>>8) & 0xff;
+	    if(a == 255 && r == 255 && g == 255) {
+	    	whiteCount++;
+	    }
+	    	}
+	    }
+	    System.out.println(whiteCount);
+	    //get blue
+	    //write image
+	    try{
+	      f = new File("pic.jpg");
+	      ImageIO.write(img, "jpg", f);
+	    }catch(IOException e){
+	      System.out.println(e);
+	    }
+	}		
+}
