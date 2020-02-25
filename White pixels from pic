@@ -10,53 +10,63 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class zadachi {
-		
+	
+	public static int[] findPixels(BufferedImage img) {
+		int whiteCount = 0;
+		int width = img.getWidth();
+		int height = img.getHeight();
+		int allPixels = width * height;
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				// get image width and height
+				int p = img.getRGB(i, j);
+				// get alpha
+				int a = (p >> 24) & 0xff;
+				// get red
+				int r = (p >> 16) & 0xff;
+				// get green
+				int g = (p >> 8) & 0xff;
+				if (a == 255 && r == 255 && g == 255) {
+					whiteCount++;
+				}
+			}
+		}
+		int others = allPixels - whiteCount;
+		int[] data = {allPixels, whiteCount, others};
+		return data;
+	}
+	
+	public static void writeOut(PrintStream write, String name, int[] data) {
+		write.println(name);
+		write.println("All pixels: " + data[0]);
+		write.println("White pixels: " + data[1]);
+		write.println("Other pixels: " + data[2]);
+		write.println();
+	}
+
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
-		BufferedImage img = null;
-	    File f = null;
-	    String name = scan.nextLine();
-	    try {
-	    PrintStream write = new PrintStream("data for pixels.txt", "windows-1251");
-	    while(!name.equals("end")) {
-	    	f = new File(name);
-	    	img = ImageIO.read(f);
-	    	int width = img.getWidth();
-			int height = img.getHeight();
-	    	int whiteCount = 0;
-	    	int allPixels = width * height;
-	    	for(int i = 0; i < width; i++) {
-	    			for(int j = 0; j < height; j++) {
-	    			//get image width and height
-	    			int p = img.getRGB(i,j);
-	    			//get alpha
-	    			int a = (p>>24) & 0xff;
-	    			//get red
-	    			int r = (p>>16) & 0xff;
-	    			//get green
-	    			int g = (p>>8) & 0xff;
-	    			if(a == 255 && r == 255 && g == 255) {
-	    				whiteCount++;
-	    			}
-	    		}
-	    	}
-	    	int others = allPixels - whiteCount;
-			write.println(name);
-			write.println("All pixels: " + allPixels);
-			write.println("White pixels: " + whiteCount);
-			write.println("Other pixels: " + others);
-			write.println();
-	    	name = scan.nextLine();
-	    }
-	    write.println();
-	    } catch (FileNotFoundException e) {
+		String name = scan.nextLine();
+		PrintStream write;
+		try {
+			write = new PrintStream("data for pixels.txt", "windows-1251");
+			while (!name.equals("end")) {
+				try {
+					BufferedImage img = ImageIO.read(new File(name));
+					writeOut(write, name, findPixels(img));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.out.println("No such file!");
+				}
+				name = scan.nextLine();
+			}
+			write.close();
+		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("No such file");
-	    } catch (UnsupportedEncodingException e) {
-	    	e.printStackTrace();
-		} catch (IOException e) {
-		// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-	}		
+	}
 }
