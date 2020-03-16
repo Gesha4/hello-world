@@ -1,11 +1,13 @@
 //Четене на бели пиксели от картинка.
 
-import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
@@ -44,27 +46,53 @@ public class zadachi {
 		write.println("Other pixels: " + data[2]);
 		write.println();
 	}
+	
+	public static List<String> findPictutes(String[] files){
+		List<String> pics = new ArrayList<>();
+		for(String name : files) {
+			if(new File(name).isFile()) {
+				String extension = name.substring(name.indexOf('.'));
+				if(extension.equals(".jpg") || extension.equals(".bmp") ||
+						extension.equals(".jpeg") || extension.equals(".png")) {
+					pics.add(name);
+				}
+			}
+		}
+		return pics;
+	}
 
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
-		String name = scan.nextLine();
-		try {
-			PrintStream write = new PrintStream("data for pixels.txt", "windows-1251");
-			while (!name.equals("end")) {
-				try {
-					BufferedImage img = ImageIO.read(new File(name));
-					int[] pixels = findPixels(img);
-					writeOut(write, name, pixels);
-				} catch (IOException e) {
-					System.out.println("No such file!");
-				}
-				name = scan.nextLine();
+		String path = System.getProperty("user.dir");
+		File file = new File(path);
+		try (PrintStream write = new PrintStream("data for pixels.txt", "windows-1251")){
+			if(file.isDirectory()) {
+				List<String> pictures = findPictutes(file.list());
+					if(!pictures.isEmpty()) {
+						for(String name : pictures) {
+							BufferedImage img = ImageIO.read(new File(name));
+							int[] pixels = findPixels(img);
+							writeOut(write, name, pixels);
+						}
+					}
+				}else {
+				write.print("That is not directory");
 			}
-			write.close();
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+		} catch (FileNotFoundException e) {
+			System.out.println(e);
+			System.out.println("Press Enter");
+			scan.nextLine();
+			scan.close();
+		} catch (UnsupportedEncodingException e) {
+			System.out.println(e);
+			System.out.println("Press Enter");
+			scan.nextLine();
+			scan.close();
+		} catch (IOException e) {
+			System.out.println(e);
+			System.out.println("Press Enter");
+			scan.nextLine();
+			scan.close();
 		}
 	}
 }
