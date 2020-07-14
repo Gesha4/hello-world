@@ -1,5 +1,4 @@
-char input;
-char mode;
+String input;
 int lamp = 13;
 void setup() {
   Serial.begin(9600);
@@ -8,16 +7,10 @@ void setup() {
 
 void loop() {
   if(Serial.available() > 0) {
-    input = Serial.read();
-    while(Serial.read() < 0) {
-      //wait
-    }
-    if(Serial.available() > 0) {
-      mode = Serial.read();
-    }
-    Serial.println(input);
-    Serial.println(mode);
-    switch(input){
+    input = Serial.readString();
+    char thing = input[0];
+    char mode = input[1];
+    switch(thing){
       case 'L' : setMode(lamp, mode);break;
     }
   }
