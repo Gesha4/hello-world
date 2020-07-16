@@ -1,0 +1,72 @@
+#include <FastLED.h>
+#define LED_PIN     5
+#define NUM_LEDS    250
+#define LED_TYPE    WS2811
+#define COLOR_ORDER GRB
+CRGB leds[NUM_LEDS];
+
+String input;
+int brightness;
+int red;
+int green;
+int blue;
+
+void setup() {
+  Serial.begin(9600);
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+}
+
+void loop() {
+  if(Serial.available() > 0) {
+    input = Serial.readString();
+    char mode = input[0];
+    switch(mode){
+      case 'A' : all();break;
+      case 'B' : blinking();
+      case 'F' : filling();break;
+    }
+  }
+}
+
+void getInfo() {
+  if(Serial.available() > 0) {
+    red = Serial.readString().toInt();
+    green = Serial.readString().toInt();
+    blue = Serial.readString().toInt();
+    brightness = Serial.readString().toInt();
+    FastLED.setBrightness(brightness);
+  }
+}
+
+void all() {
+  getInfo();
+  fill_solid(leds, NUM_LEDS, CRGB(red, green, blue));
+}
+
+void blinking(){
+  getInfo();
+  fill_solid(leds, NUM_LEDS, CRGB(red, green, blue));
+  delay(500);
+  FastLED.clear();
+  delay(500);
+  if(Serial.available() > 0) {
+    void loop();
+  } else {
+    blinking();
+  }
+}
+
+void filling(){
+  getInfo();
+  for(int i = 0; i < NUM_LEDS; i++){
+    leds[i] = CRGB(red, green, blue);
+  }
+  for(int i = 0; i < NUM_LEDS; i++){
+    leds[i] = CRGB::Black;
+  }
+  if(Serial.available() > 0) {
+    void loop();
+  } else {
+    filling();
+  }
+}
