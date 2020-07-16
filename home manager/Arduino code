@@ -1,8 +1,12 @@
 String input;
-int lamp = 13;
+int lamp = 8;
+int nightLamp = 9;
+int fan = 10;
 void setup() {
   Serial.begin(9600);
   pinMode(lamp,OUTPUT);
+  pinMode(nightLamp, OUTPUT);
+  pinMode(fan, OUTPUT);
 }
 
 void loop() {
@@ -10,18 +14,22 @@ void loop() {
     input = Serial.readString();
     char thing = input[0];
     char mode = input[1];
+    Serial.println(thing);
+    Serial.println(mode);
     switch(thing){
       case 'L' : setMode(lamp, mode);break;
+      case 'N' : setMode(nightLamp, mode);break;
+      case 'F' : setMode(fan, mode);break;
     }
   }
 }
 
 void setMode(int thing, char mode) {
-  String state;
+  int state;
   if (mode == '1') {
-    state = "HIGH";
+    state = 1;
   } else {
-    state = "LOW";
+    state = 0;
   }
-  digitalWrite(thing, mode);
+  digitalWrite(thing, state);
 }
