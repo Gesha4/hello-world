@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Home manage</string>
+    <string name="Lamp">Lamp</string>
+    <string name="Start">Start</string>
+    <string name="Stop">Stop</string>
+    <string name="connect_error_msg">Make sure that you are connected to Arduino device via bluetooth and then try again.</string>
+    <string name="try_again">Try again</string>
+    <string name="home_manager">Home Manager</string>
+</resources>
